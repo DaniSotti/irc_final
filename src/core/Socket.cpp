@@ -53,16 +53,19 @@ void Server::initSocket() {
 
     server_socket = socketAddress(); // get the server address info
     for (p = server_socket; p != NULL; p = p->ai_next) {
-        _socketFd = socket(server_socket->ai_family, server_socket->ai_socktype, server_socket->ai_protocol);
+        // _socketFd = socket(server_socket->ai_family, server_socket->ai_socktype, server_socket->ai_protocol);
+        _socketFd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if (_socketFd < 0) {
             std::cout << "couldnt open the socket" << std::endl;
             continue;
         }
         setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)); // allow address reuse
-        check_returns = bind(_socketFd, server_socket->ai_addr, server_socket->ai_addrlen); // bind the socket
+        // check_returns = bind(_socketFd, server_socket->ai_addr, server_socket->ai_addrlen); // bind the socket
+        check_returns = bind(_socketFd, p->ai_addr, p->ai_addrlen);
         if (check_returns < 0) {
             std::cout << "couldnt bind the socket" << std::endl;
             close(_socketFd);
+            continue;
         }
         break;
     }

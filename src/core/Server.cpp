@@ -78,6 +78,8 @@ void Server::handleData(int fd) {
 
     // check for errors or client disconnection
     nbrBytes = recv(fd, &buffer, sizeof(buffer) - 1, 0);
+    if (nbrBytes > 0)
+     buffer[nbrBytes] = '\0';
     if (nbrBytes <= 0) {
         if (nbrBytes == 0) {
             // client disconnected

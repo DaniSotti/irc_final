@@ -1,12 +1,15 @@
 #include "Client.hpp"
 
-Client::Client(int id){
-    _clientID = id;
-    _nickName = "";
-    _userName = "";
-    _channel = "";
-    _lastTriedNick = "";
-    _hasPassword = false;
+Client::Client(int id) : 
+    _buffer(),
+    _clientID(id),
+    _nickName(""),
+    _lastTriedNick(""),
+    _userName(""),
+    _cmd(),
+    _channel(""),
+    _hostname(""),
+    _hasPassword(false) {
 
     std::cout << "Client created with id: " << id << std::endl;
 }
@@ -81,8 +84,8 @@ void Client::setLastNick(std::string lastNick) {
 
 void Client::setCommand(std::string cmd) {
     _cmd.clear();
-    if (cmd[0] == '/')
-        cmd.erase(0, 1);
+    if (!cmd.empty() && cmd[0] == '/')
+    cmd.erase(0, 1);
     std::string holder;
     if ((int)cmd.find(" ") > 0) {
         holder = Parser::toUpper(((cmd.substr(0, cmd.find(" ")))));

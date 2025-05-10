@@ -36,21 +36,25 @@ int	Manager::sendIrcMessage(int clientId, std::string message)
 void Manager::runActions(Client &client) {
     const std::vector<std::string> &cmds = client.getCommand();
     if (cmds.empty())
+    {
         return; // ou envie uma mensagem de erro adequada
-
-    std::string cmd = cmds[0];
-
-    if (!client.hasPassword() && cmd != "PASS" && cmd != "CAP" && cmd != "QUIT") {
-        sendIrcMessage(client.getId(), formatMessage(client, "464") + " :You must provide the correct password");
-        return;
     }
+    else
+    {
+        std::string cmd = cmds[0];
+        if (!client.hasPassword() && cmd != "PASS" && cmd != "CAP" && cmd != "QUIT") {
+            sendIrcMessage(client.getId(), formatMessage(client, "464") + " :You must provide the correct password");
+            return;
+        }
 
-    std::string action = cmd;
-    std::map<std::string, eventFunction>::iterator it = _actionMap.find(action);
-    if (it != _actionMap.end()) {
-        it->second(client);
-    } else {
-        sendIrcMessage(client.getId(), formatMessage(client, UNKNOWNCOMMAND) + " :Unknown command");
+
+        std::string action = cmd;
+        std::map<std::string, eventFunction>::iterator it = _actionMap.find(action);
+        if (it != _actionMap.end()) {
+            it->second(client);
+        } else {
+            sendIrcMessage(client.getId(), formatMessage(client, UNKNOWNCOMMAND) + " :Unknown command");
+        }
     }
 }
 
